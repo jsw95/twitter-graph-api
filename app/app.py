@@ -1,4 +1,4 @@
-from database import db_session, init_db
+from app.database import db_session, init_db
 from flask import Flask
 from schema import schema
 
