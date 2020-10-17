@@ -1,39 +1,55 @@
-from models import Department as DepartmentModel
-from models import Employee as EmployeeModel
-from models import Role as RoleModel
+from app.models import Users as UserModel
+from app.models import Posts as PostModel
 
 import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyConnectionField, SQLAlchemyObjectType
 
 
-class Department(SQLAlchemyObjectType):
+class ActiveSQLAlchemyObjectType(SQLAlchemyObjectType):
     class Meta:
-        model = DepartmentModel
-        interfaces = (relay.Node, )
+        abstract = True
+    #
+    # @classmethod
+    # def get_node(cls, info, id):
+    #     return cls.get_query(info).filter(
+    #         and_(cls._meta.model.deleted_at==None,
+    #              cls._meta.model.id==id)
+    #         ).first()
 
 
-class Employee(SQLAlchemyObjectType):
+class User(ActiveSQLAlchemyObjectType):
     class Meta:
-        model = EmployeeModel
-        interfaces = (relay.Node, )
+        model = UserModel
+        # interfaces = (relay.Node, )
 
-
-class Role(SQLAlchemyObjectType):
-    class Meta:
-        model = RoleModel
-        interfaces = (relay.Node, )
-
-
+#
+# class Post(ActiveSQLAlchemyObjectType):
+#     class Meta:
+#         model = PostModel
+#         interfaces = (relay.Node, )
+#
+#
 class Query(graphene.ObjectType):
-    node = relay.Node.Field()
-    # Allow only single column sorting
-    all_employees = SQLAlchemyConnectionField(
-        Employee.connection, sort=Employee.sort_argument())
-    # Allows sorting over multiple columns, by default over the primary key
-    all_roles = SQLAlchemyConnectionField(Role.connection)
-    # Disable sorting over this field
-    all_departments = SQLAlchemyConnectionField(Department.connection, sort=None)
+    # node = relay.Node.Field()
+    hello = graphene.String()
+    users = graphene.List(User)
 
+    def resolve_users(self, info):
+        query = User.get_query(info)  # SQLAlchemy query
+        return query.all()
 
+    def resolve_hello(self, info):
+        return "Hello"
+#
+#     # Allow only single column sorting
+#     # all_users = SQLAlchemyConnectionField(User.connection)
+#     # all_employees = SQLAlchemyConnectionField(
+#         # Employee.connection, sort=Employee.sort_argument())
+#     # Allows sorting over multiple columns, by default over the primary key
+#     # all_roles = SQLAlchemyConnectionField(Role.connection)
+#     # Disable sorting over this field
+#     # all_departments = SQLAlchemyConnectionField(Department.connection, sort=None)
+#
+#
 schema = graphene.Schema(query=Query)

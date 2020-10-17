@@ -2,3 +2,5 @@ flask
 graphene
 graphene-sqlalchemy
 Flask-SQLAlchemy
+SQLAlchemy
+flask_graphql

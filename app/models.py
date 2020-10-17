@@ -1,39 +1,54 @@
  
-from database import Base
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func
+from app.database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func, Index
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import backref, relationship
 
 
-class Department(Base):
-    __tablename__ = 'department'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
+class Users(Base):
+    __tablename__ = 'users'
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    username = Column(String)
 
 
-class Role(Base):
-    __tablename__ = 'roles'
-    role_id = Column(Integer, primary_key=True)
-    name = Column(String)
+class Posts(Base):
+    __tablename__ = "posts"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    text = Column(String)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("twitter.users"))
+    user = relationship("Users", backref="user_posts")
 
 
-class Employee(Base):
-    __tablename__ = 'employee'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    # Use default=func.now() to set the default hiring time
-    # of an Employee to be the current time when an
-    # Employee record was created
-    hired_on = Column(DateTime, default=func.now())
-    department_id = Column(Integer, ForeignKey('department.id'))
-    role_id = Column(Integer, ForeignKey('roles.role_id'))
-    # Use cascade='delete,all' to propagate the deletion of a Department onto its Employees
-    department = relationship(
-        Department,
-        backref=backref('employees',
-                        uselist=True,
-                        cascade='delete,all'))
-    role = relationship(
-        Role,
-        backref=backref('roles',
-                        uselist=True,
-                        cascade='delete,all'))
+
+
+
+
+
+# class Role(Base):
+#     __tablename__ = 'roles'
+#     role_id = Column(Integer, primary_key=True)
+#     name = Column(String)
+#
+#
+# class Employee(Base):
+#     __tablename__ = 'employee'
+#     id = Column(Integer, primary_key=True)
+#     name = Column(String)
+#     # Use default=func.now() to set the default hiring time
+#     # of an Employee to be the current time when an
+#     # Employee record was created
+#     hired_on = Column(DateTime, default=func.now())
+#     department_id = Column(Integer, ForeignKey('department.id'))
+#     role_id = Column(Integer, ForeignKey('roles.role_id'))
+#     # Use cascade='delete,all' to propagate the deletion of a Department onto its Employees
+#     department = relationship(
+#         Department,
+#         backref=backref('employees',
+#                         uselist=True,
+#                         cascade='delete,all'))
+#     role = relationship(
+#         Role,
+#         backref=backref('roles',
+#                         uselist=True,
+#                         cascade='delete,all'))
