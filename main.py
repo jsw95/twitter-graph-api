@@ -44,10 +44,10 @@ class Mutations(graphene.ObjectType):
 schema = graphene.Schema(query=Query, mutation=Mutations)
 result = schema.execute('''
     mutation  {
-        createUser(username: "j"){
+        createUser(username: "Jack"){
             user {
                 username
-                
+                id
                 }
             }
         }
