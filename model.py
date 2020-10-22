@@ -9,12 +9,12 @@ import numpy as np
 
 print("Starting")
 
-data = pd.read_csv("data/labeled_data.csv", index_col=0)
+data = pd.read_csv("data/labeled_tweets.csv", index_col=0)
 
 print(data.head(10))
 print(data[data.hate_speech == 1]['tweet'])
 data = data.sample(frac=1)
-data = data[:10]
+data = data[:1000]
 tweets = data['tweet']
 labels = data['class']
 
@@ -99,14 +99,14 @@ model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"]
 epochs = 1
 
 # Fit the model using the train and test datasets.
-model.fit(train_ds, validation_data=raw_test_ds, epochs=epochs)
+model.fit(train_ds, validation_data=test_ds, epochs=epochs)
 result = model.evaluate(test_ds)
 
 
 # A string input
 inputs = tf.keras.Input(shape=(1,), dtype="string")
 # Turn strings into vocab indices
-indices = vectorize_layer(inputs)
+indices = vectorizer(inputs)
 # Turn vocab indices into predictions
 outputs = model(indices)
 
@@ -117,6 +117,6 @@ end_to_end_model.compile(
 )
 
 # Test it with `raw_test_ds`, which yields raw strings
-end_to_end_model.evaluate(test_ds)
+# end_to_end_model.evaluate(test_ds)
 
-end_to_end_model.predict(np.array(["hwllo", "bitch"]))
+print(end_to_end_model.predict(np.array(["hello", "bitch"])))
