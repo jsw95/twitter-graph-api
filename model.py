@@ -14,7 +14,7 @@ data = pd.read_csv("data/labeled_data.csv", index_col=0)
 print(data.head(10))
 print(data[data.hate_speech == 1]['tweet'])
 data = data.sample(frac=1)
-
+data = data[:10]
 tweets = data['tweet']
 labels = data['class']
 
@@ -62,6 +62,7 @@ test_ds = raw_test_ds.map(vectorize_text)
 
 train_ds = train_ds.map(lambda x_text, x_label: (x_text, tf.expand_dims(x_label, -1)))
 test_ds = test_ds.map(lambda x_text, x_label: (x_text, tf.expand_dims(x_label, -1)))
+# test_ds = test_ds.map(lambda x_text, x_label: (x_text, tf.expand_dims(x_label, -1)))
 
 # Do async prefetching / buffering of the data for best performance on GPU.
 train_ds = train_ds.cache().prefetch(buffer_size=10)
@@ -101,7 +102,7 @@ epochs = 1
 model.fit(train_ds, validation_data=raw_test_ds, epochs=epochs)
 result = model.evaluate(test_ds)
 
-print(result)
+
 # A string input
 inputs = tf.keras.Input(shape=(1,), dtype="string")
 # Turn strings into vocab indices
@@ -116,4 +117,6 @@ end_to_end_model.compile(
 )
 
 # Test it with `raw_test_ds`, which yields raw strings
-end_to_end_model.evaluate(raw_test_ds)
+end_to_end_model.evaluate(test_ds)
+
+end_to_end_model.predict(np.array(["hwllo", "bitch"]))
