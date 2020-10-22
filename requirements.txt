@@ -4,3 +4,7 @@ graphene-sqlalchemy
 Flask-SQLAlchemy
 SQLAlchemy
 flask_graphql
+keras
+tensorflow-gpu
+scikit-learn
+pandas

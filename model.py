@@ -5,6 +5,8 @@ from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 import pandas as pd
 import re
 import string
+import numpy as np
+
 print("Starting")
 
 data = pd.read_csv("data/labeled_data.csv", index_col=0)
