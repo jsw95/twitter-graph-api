@@ -8,13 +8,14 @@ import string
 import numpy as np
 
 print("Starting")
-
+tf.debugging.set_log_device_placement(True)
+print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 data = pd.read_csv("data/labeled_tweets.csv", index_col=0)
 
 print(data.head(10))
 print(data[data.hate_speech == 1]['tweet'])
 data = data.sample(frac=1)
-data = data[:1000]
+data = data[:100]
 tweets = data['tweet']
 labels = data['class']
 
